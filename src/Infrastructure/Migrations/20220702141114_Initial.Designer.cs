@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220702133447_Initial")]
+    [Migration("20220702141114_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +58,16 @@ namespace Infrastructure.Migrations
                         .HasName("pk_cd_users");
 
                     b.ToTable("cd_users", "admin");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d3f67070-a5e9-4891-bd64-be10f81888d9"),
+                            FirstName = "Администратор",
+                            IsDeleted = false,
+                            LastName = "Администратор",
+                            UserName = "admin"
+                        });
                 });
 #pragma warning restore 612, 618
         }

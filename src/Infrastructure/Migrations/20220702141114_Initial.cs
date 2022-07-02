@@ -28,6 +28,12 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("pk_cd_users", x => x.id);
                 });
+
+            migrationBuilder.InsertData(
+                schema: "admin",
+                table: "cd_users",
+                columns: new[] { "id", "c_first_name", "b_deleted", "c_last_name", "c_middle_name", "c_user_name" },
+                values: new object[] { new Guid("d3f67070-a5e9-4891-bd64-be10f81888d9"), "Администратор", false, "Администратор", null, "admin" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

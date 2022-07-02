@@ -14,7 +14,7 @@ public static class ModelBuilderExtension
                 Id = Guid.Parse("d3f67070-a5e9-4891-bd64-be10f81888d9"),
                 UserName = "admin",
                 LastName = "Администратор",
-                FirstName = "Администратор",
+                FirstName = "Администратор"
             }
         );
     }
