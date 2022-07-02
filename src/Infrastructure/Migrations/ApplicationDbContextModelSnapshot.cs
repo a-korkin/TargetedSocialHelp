@@ -47,6 +47,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("c_middle_name");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("c_password");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("text")
@@ -64,6 +69,7 @@ namespace Infrastructure.Migrations
                             FirstName = "Администратор",
                             IsDeleted = false,
                             LastName = "Администратор",
+                            Password = "$2a$12$e5V40L6Xqu.crMn5Qe3.JOr5PjBrUxFqebkGROZ0Yons0U4x6a.J.",
                             UserName = "admin"
                         });
                 });

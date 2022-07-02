@@ -21,4 +21,8 @@ public class User : BaseEntity
 
     [Column("c_middle_name")]
     public string? MiddleName { get; set; }
+
+    [Column("c_password")]
+    [Required]
+    public string Password { get; set; } = string.Empty;
 }

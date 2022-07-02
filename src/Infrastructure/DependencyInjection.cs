@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Application.Services;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,8 @@ public static class DependencyInjection
                     .UseLowerCaseNamingConvention();
             }
         );
+
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

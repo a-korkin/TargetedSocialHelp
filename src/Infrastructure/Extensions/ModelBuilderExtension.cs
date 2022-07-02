@@ -1,3 +1,4 @@
+using Application.Interfaces;
 using Domain.Entities.Admin;
 using Microsoft.EntityFrameworkCore;
 
@@ -5,7 +6,7 @@ namespace Infrastructure.Extensions;
 
 public static class ModelBuilderExtension
 {
-    public static void Seed(this ModelBuilder builder)
+    public static void Seed(this ModelBuilder builder, IAuthService authService)
     {
         builder.Entity<User>().HasData
         (
@@ -14,7 +15,8 @@ public static class ModelBuilderExtension
                 Id = Guid.Parse("d3f67070-a5e9-4891-bd64-be10f81888d9"),
                 UserName = "admin",
                 LastName = "Администратор",
-                FirstName = "Администратор"
+                FirstName = "Администратор",
+                Password = authService.CreatePasswordHash("admin")
             }
         );
     }
