@@ -11,5 +11,5 @@ public abstract class BaseEntity
 
     [Column("b_deleted")]
     [Required]
-    public bool IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; }
 }

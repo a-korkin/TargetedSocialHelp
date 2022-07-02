@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Domain.Attributes;
 
 public class TableDescriptionAttribute : TableAttribute
