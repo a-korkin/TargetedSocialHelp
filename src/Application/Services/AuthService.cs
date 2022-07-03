@@ -4,6 +4,7 @@ using System.Text;
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
 using Application.Models.Helpers;
+using Domain.Entities.Admin;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -43,7 +44,7 @@ public class AuthService : IAuthService
         if (!VerifyPassword(loginDto.Password, user!.Password))
             result.Result = AuthResults.NotValidPassword;
 
-        var accessToken = CreateJwtToken(user.UserName);
+        var accessToken = CreateJwtToken(user);
         var refreshToken = Guid.NewGuid().ToString();
         user.RefreshToken = refreshToken;
         await _context.SaveChangesAsync();
@@ -54,13 +55,14 @@ public class AuthService : IAuthService
         return result;
     }
 
-    private string CreateJwtToken(string userName)
+    private string CreateJwtToken(User user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenSettings.SecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
         var claims = new Claim[]
         {
-            new Claim(ClaimTypes.Name, userName)
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim("id", user.Id.ToString())
         };
 
         var jwtToken = new JwtSecurityToken(
@@ -72,5 +74,15 @@ public class AuthService : IAuthService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+    }
+
+    public async Task LogoutAsync(Guid userId)
+    {
+        var user = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+        if (user is not null)
+        {
+            user.RefreshToken = null;
+            await _context.SaveChangesAsync();
+        }
     }
 }
