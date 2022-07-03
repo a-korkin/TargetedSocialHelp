@@ -25,4 +25,7 @@ public class User : BaseEntity
     [Column("c_password")]
     [Required]
     public string Password { get; set; } = string.Empty;
+
+    [Column("c_refresh_token")]
+    public string? RefreshToken { get; set; }
 }

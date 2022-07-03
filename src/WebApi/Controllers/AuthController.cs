@@ -1,33 +1,37 @@
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
+using Application.Models.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Controllers;
 
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly IApplicationDbContext _context;
     private readonly IAuthService _authService;
 
-    public AuthController(IApplicationDbContext context, IAuthService authService)
+    public AuthController(IAuthService authService)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
         _authService = authService ?? throw new ArgumentNullException(nameof(authService));
     }
 
     [HttpPost("api/login")]
     public async Task<ActionResult<TokenDto>> LoginAsync([FromBody] LoginDto loginDto)
     {
-        var user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == loginDto.UserName);
+        var result = await _authService.LoginAsync(loginDto);
 
-        if (user is null)
+        if (result.Result == AuthResults.NotFoundUser)
             return BadRequest();
 
-        if (!_authService.VerifyPassword(loginDto.Password, user.Password))
+        if (result.Result == AuthResults.NotValidPassword)
             return Unauthorized();
 
-        return _authService.GetAuthToken(user);
+        Response.Cookies.Append("refresh_token", result.RefreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTime.Now.AddDays(7)
+        });
+
+        return new TokenDto(result.AccessToken);
     }
 }
