@@ -33,9 +33,11 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<TokenDto>> LoginAsync([FromBody] LoginDto loginDto)
     {
         var user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == loginDto.UserName);
-        if (user is null) throw new Exception("User not found.");
 
-        var token = _authService.GetAuthToken(loginDto);
+        if (user is null) return NotFound();
+        if (!_authService.VerifyPassword(loginDto.Password, user.Password)) return Unauthorized();
+
+        var token = _authService.GetAuthToken(user);
         return Ok(token);
     }
 }

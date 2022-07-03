@@ -4,6 +4,7 @@ using System.Text;
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
 using Application.Models.Helpers;
+using Domain.Entities.Admin;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -27,13 +28,12 @@ public class AuthService : IAuthService
     public bool VerifyPassword(string password, string hash) =>
         BCrypt.Net.BCrypt.Verify(text: password, hash: hash);
 
-    public TokenDto GetAuthToken(LoginDto loginDto)
+    public TokenDto GetAuthToken(User user)
     {
-        var tokenDto = new TokenDto
+        return new TokenDto
         (
-            CreateJwtToken(loginDto.UserName)
+            CreateJwtToken(user.UserName)
         );
-        return tokenDto;
     }
 
     private string CreateJwtToken(string userName)
