@@ -7,20 +7,13 @@ namespace Infrastructure.Data;
 
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
-    private readonly IAuthService _authService;
-
-    public ApplicationDbContext(
-        DbContextOptions<ApplicationDbContext> options,
-        IAuthService authService) : base(options)
-    {
-        _authService = authService;
-    }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
     public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Seed(_authService);
+        builder.Seed();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken)

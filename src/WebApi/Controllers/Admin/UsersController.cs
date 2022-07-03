@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Application.Models.Dtos.Admin;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,5 +27,15 @@ public class UsersController : ControllerBase
 
         Console.WriteLine($"password ok: {_authService.VerifyPassword("admin", user.Password)}");
         return "hello world";
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<TokenDto>> LoginAsync([FromBody] LoginDto loginDto)
+    {
+        var user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == loginDto.UserName);
+        if (user is null) throw new Exception("User not found.");
+
+        var token = _authService.GetAuthToken(loginDto);
+        return Ok(token);
     }
 }
