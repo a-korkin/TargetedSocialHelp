@@ -16,7 +16,8 @@ public class AuthService : IAuthService
 
     public AuthService(IOptions<TokenSettings> tokenSettings)
     {
-        _tokenSettings = tokenSettings.Value ?? throw new ArgumentNullException(nameof(tokenSettings));
+        _tokenSettings = tokenSettings.Value
+            ?? throw new ArgumentNullException(nameof(tokenSettings));
     }
 
     public string CreatePasswordHash(string password)
