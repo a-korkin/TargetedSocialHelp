@@ -1,7 +1,9 @@
 using Application.Interfaces;
+using Application.Models.Dtos.Admin;
 using Application.Models.Helpers;
 using Application.Services;
-using Application.Test.Helpers;
+using Domain.Entities.Admin;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moq;
 
@@ -15,8 +17,19 @@ public class AuthServiceShould
     public AuthServiceShould()
     {
         IOptions<TokenSettings> tokenSettings = Options.Create<TokenSettings>(new TokenSettings());
-        IApplicationDbContext context = new MockApplicationDbContext();
-        _authService = new Mock<AuthService>(tokenSettings, context).Object;
+        Mock<IApplicationDbContext> context = new();
+        List<User> userData = new()
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                UserName = "admin"
+            }
+        };
+        Mock<DbSet<User>> users = new();
+        users.Setup(u => u.AddRange(userData));
+        context.Setup(c => c.Set<User>()).Returns(users.Object);
+        _authService = new Mock<AuthService>(tokenSettings, context.Object).Object;
     }
 
     [Fact]
@@ -41,5 +54,18 @@ public class AuthServiceShould
 
         // assert
         Assert.True(passwordVerified);
+    }
+
+    [Fact]
+    public async void Logined()
+    {
+        // arrange
+        LoginDto loginDto = new("admin", PASSWORD);
+
+        // act 
+        var authResult = await _authService.LoginAsync(loginDto);
+
+        // assert
+        Assert.True(authResult.Result == AuthResults.Success);
     }
 }
