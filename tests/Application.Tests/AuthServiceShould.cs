@@ -3,9 +3,9 @@ using Application.Models.Dtos.Admin;
 using Application.Models.Helpers;
 using Application.Services;
 using Domain.Entities.Admin;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moq;
+using MockQueryable.Moq;
 
 namespace Application.Tests;
 
@@ -16,19 +16,27 @@ public class AuthServiceShould
 
     public AuthServiceShould()
     {
-        IOptions<TokenSettings> tokenSettings = Options.Create<TokenSettings>(new TokenSettings());
+        var token = new TokenSettings
+        {
+            SecretKey = "super_secret_key_strong",
+            Audience = "SecretAudience",
+            Issuer = "SecretIssuer"
+        };
+
+        IOptions<TokenSettings> tokenSettings = Options.Create<TokenSettings>(token);
         Mock<IApplicationDbContext> context = new();
-        List<User> userData = new()
+        var users = new List<User>
         {
             new()
             {
                 Id = Guid.NewGuid(),
-                UserName = "admin"
+                UserName = "admin",
+                Password = "$2a$12$e5V40L6Xqu.crMn5Qe3.JOr5PjBrUxFqebkGROZ0Yons0U4x6a.J."
             }
         };
-        Mock<DbSet<User>> users = new();
-        users.Setup(u => u.AddRange(userData));
-        context.Setup(c => c.Set<User>()).Returns(users.Object);
+
+        var mock = users.AsQueryable().BuildMockDbSet();
+        context.Setup(x => x.Set<User>()).Returns(mock.Object);
         _authService = new Mock<AuthService>(tokenSettings, context.Object).Object;
     }
 
@@ -57,7 +65,7 @@ public class AuthServiceShould
     }
 
     [Fact]
-    public async void Logined()
+    public async void LogedIn()
     {
         // arrange
         LoginDto loginDto = new("admin", PASSWORD);
