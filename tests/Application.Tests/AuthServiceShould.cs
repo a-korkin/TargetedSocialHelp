@@ -6,13 +6,16 @@ using Domain.Entities.Admin;
 using Microsoft.Extensions.Options;
 using Moq;
 using MockQueryable.Moq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Tests;
 
 public class AuthServiceShould
 {
     private const string PASSWORD = "my_secret_password";
+    private readonly Guid USER_ID = Guid.Parse("97159bc1-2ffd-421e-acb2-a07d869526c6");
     private readonly IAuthService _authService;
+    private readonly Mock<IApplicationDbContext> _context;
 
     public AuthServiceShould()
     {
@@ -24,20 +27,20 @@ public class AuthServiceShould
         };
 
         IOptions<TokenSettings> tokenSettings = Options.Create<TokenSettings>(token);
-        Mock<IApplicationDbContext> context = new();
-        var users = new List<User>
+        _context = new();
+        List<User> users = new()
         {
             new()
             {
-                Id = Guid.NewGuid(),
+                Id = USER_ID,
                 UserName = "admin",
                 Password = "$2a$12$e5V40L6Xqu.crMn5Qe3.JOr5PjBrUxFqebkGROZ0Yons0U4x6a.J."
             }
         };
 
         var mock = users.AsQueryable().BuildMockDbSet();
-        context.Setup(x => x.Set<User>()).Returns(mock.Object);
-        _authService = new Mock<AuthService>(tokenSettings, context.Object).Object;
+        _context.Setup(x => x.Set<User>()).Returns(mock.Object);
+        _authService = new Mock<AuthService>(tokenSettings, _context.Object).Object;
     }
 
     [Fact]
@@ -65,7 +68,7 @@ public class AuthServiceShould
     }
 
     [Fact]
-    public async void LogedIn()
+    public async Task LogedIn()
     {
         // arrange
         LoginDto loginDto = new("admin", PASSWORD);
@@ -75,5 +78,20 @@ public class AuthServiceShould
 
         // assert
         Assert.True(authResult.Result == AuthResults.Success);
+    }
+
+    [Fact]
+    public async Task LogedOut()
+    {
+        // arrange
+        var user = await _context.Object.Set<User>()
+            .SingleOrDefaultAsync(u => u.Id == USER_ID);
+
+        // act 
+        await _authService.LogoutAsync(USER_ID);
+
+        // assert
+        Assert.NotNull(user);
+        Assert.Null(user!.RefreshToken);
     }
 }

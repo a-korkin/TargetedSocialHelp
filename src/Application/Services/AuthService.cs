@@ -79,7 +79,9 @@ public class AuthService : IAuthService
 
     public async Task LogoutAsync(Guid userId)
     {
-        var user = await _context.Set<User>().SingleOrDefaultAsync(u => u.Id == userId);
+        var user = await _context.Set<User>()
+            .SingleOrDefaultAsync(u => u.Id == userId);
+
         if (user is not null)
         {
             user.RefreshToken = null;
