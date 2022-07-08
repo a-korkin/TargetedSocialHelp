@@ -78,6 +78,8 @@ public class AuthServiceShould
 
         // assert
         Assert.True(authResult.Result == AuthResults.Success);
+        Assert.NotEmpty(authResult.AccessToken);
+        Assert.NotEmpty(authResult.RefreshToken);
     }
 
     [Fact]
