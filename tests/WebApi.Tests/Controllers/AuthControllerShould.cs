@@ -1,13 +1,8 @@
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
-using Application.Models.Helpers;
-using Application.Services;
 using Application.Tests.Helpers;
-using Domain.Entities.Admin;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using MockQueryable.Moq;
 using Moq;
 using WebApi.Controllers;
 using WebApi.Tests.Attributes;
@@ -20,8 +15,8 @@ public class AuthControllerShould
 
     public AuthControllerShould()
     {
-        Mock<IApplicationDbContext> mockDbContext = MockDbContext.Create();
-        IAuthService authService = MockAuthService.Create(mockDbContext);
+        Mock<IApplicationDbContext> mockDbContext = MockHelper.CreateDbContext();
+        IAuthService authService = MockHelper.CreateAuthService(mockDbContext);
 
         ControllerContext controllerContext = new()
         {

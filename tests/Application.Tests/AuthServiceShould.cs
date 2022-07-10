@@ -16,8 +16,8 @@ public class AuthServiceShould
 
     public AuthServiceShould()
     {
-        _context = MockDbContext.Create();
-        _authService = MockAuthService.Create(_context);
+        _context = MockHelper.CreateDbContext();
+        _authService = MockHelper.CreateAuthService(_context);
     }
 
     [Fact]
@@ -64,10 +64,10 @@ public class AuthServiceShould
     {
         // arrange
         var user = await _context.Object.Set<User>()
-            .SingleOrDefaultAsync(u => u.Id == MockDbContext.AdminUser.Id);
+            .SingleOrDefaultAsync(u => u.Id == MockHelper.AdminUser.Id);
 
         // act 
-        await _authService.LogoutAsync(MockDbContext.AdminUser.Id);
+        await _authService.LogoutAsync(MockHelper.AdminUser.Id);
 
         // assert
         Assert.NotNull(user);
