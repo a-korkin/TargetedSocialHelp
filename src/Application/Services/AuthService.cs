@@ -40,10 +40,15 @@ public class AuthService : IAuthService
             .SingleOrDefaultAsync(u => u.UserName == loginDto.UserName);
 
         if (user is null)
+        {
             result.Result = AuthResults.NotFoundUser;
-
+            return result;
+        }
         if (!VerifyPassword(loginDto.Password, user!.Password))
+        {
             result.Result = AuthResults.NotValidPassword;
+            return result;
+        }
 
         var accessToken = CreateJwtToken(user);
         var refreshToken = Guid.NewGuid().ToString();

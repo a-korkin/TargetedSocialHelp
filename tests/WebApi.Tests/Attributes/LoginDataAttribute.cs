@@ -9,8 +9,10 @@ public class LoginDataAttribute : DataAttribute
 {
     public override IEnumerable<object[]> GetData(MethodInfo testMethod)
     {
-        LoginDto loginDto = new("admin", "admin");
+        LoginDto adminLogin = new("admin", "admin");
+        LoginDto badLogin = new("bad", "admin");
 
-        yield return new object[] {typeof(OkObjectResult), loginDto};
+        yield return new object[] { typeof(OkObjectResult), adminLogin };
+        yield return new object[] { typeof(BadRequestResult), badLogin };
     }
 }
