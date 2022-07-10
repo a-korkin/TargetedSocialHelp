@@ -28,11 +28,11 @@ public class AuthController : ControllerBase
         if (result.Result == AuthResults.NotValidPassword)
             return Unauthorized();
 
-        // Response.Cookies.Append(REFRESH_TOKEN, result.RefreshToken, new CookieOptions
-        // {
-        //     HttpOnly = true,
-        //     Expires = DateTime.Now.AddDays(7)
-        // });
+        Response.Cookies.Append(REFRESH_TOKEN, result.RefreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTime.Now.AddDays(7)
+        });
 
         return Ok(new TokenDto(result.AccessToken));
     }
