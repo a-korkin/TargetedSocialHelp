@@ -2,6 +2,7 @@ using Application.Interfaces;
 using Application.Models.Dtos.Admin;
 using Application.Models.Helpers;
 using Application.Services;
+using Application.Tests.Helpers;
 using Domain.Entities.Admin;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,34 +20,14 @@ public class AuthControllerShould
 
     public AuthControllerShould()
     {
-        var token = new TokenSettings
-        {
-            SecretKey = "super_secret_key_strong",
-            Audience = "SecretAudience",
-            Issuer = "SecretIssuer"
-        };
-
-        IOptions<TokenSettings> tokenSettings = Options.Create<TokenSettings>(token);
-        Mock<IApplicationDbContext> context = new();
-        List<User> users = new()
-        {
-            new()
-            {
-                Id = Guid.Parse("97159bc1-2ffd-421e-acb2-a07d869526c6"),
-                UserName = "admin",
-                Password = "$2a$12$e5V40L6Xqu.crMn5Qe3.JOr5PjBrUxFqebkGROZ0Yons0U4x6a.J."
-            }
-        };
-
-        var mock = users.AsQueryable().BuildMockDbSet();
-        context.Setup(x => x.Set<User>()).Returns(mock.Object);
-        Mock<AuthService> authService = new(tokenSettings, context.Object);
+        Mock<IApplicationDbContext> mockDbContext = MockDbContext.Create();
+        IAuthService authService = MockAuthService.Create(mockDbContext);
 
         ControllerContext controllerContext = new()
         {
             HttpContext = new DefaultHttpContext()
         };
-        _authController = new AuthController(authService.Object)
+        _authController = new AuthController(authService)
         {
             ControllerContext = controllerContext
         };

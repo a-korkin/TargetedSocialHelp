@@ -1,46 +1,23 @@
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
 using Application.Models.Helpers;
-using Application.Services;
 using Domain.Entities.Admin;
-using Microsoft.Extensions.Options;
 using Moq;
-using MockQueryable.Moq;
 using Microsoft.EntityFrameworkCore;
+using Application.Tests.Helpers;
 
 namespace Application.Tests;
 
 public class AuthServiceShould
 {
     private const string PASSWORD = "admin";
-    private readonly Guid USER_ID = Guid.Parse("97159bc1-2ffd-421e-acb2-a07d869526c6");
     private readonly IAuthService _authService;
     private readonly Mock<IApplicationDbContext> _context;
 
     public AuthServiceShould()
     {
-        var token = new TokenSettings
-        {
-            SecretKey = "super_secret_key_strong",
-            Audience = "SecretAudience",
-            Issuer = "SecretIssuer"
-        };
-
-        IOptions<TokenSettings> tokenSettings = Options.Create<TokenSettings>(token);
-        _context = new();
-        List<User> users = new()
-        {
-            new()
-            {
-                Id = USER_ID,
-                UserName = "admin",
-                Password = "$2a$12$e5V40L6Xqu.crMn5Qe3.JOr5PjBrUxFqebkGROZ0Yons0U4x6a.J."
-            }
-        };
-
-        var mock = users.AsQueryable().BuildMockDbSet();
-        _context.Setup(x => x.Set<User>()).Returns(mock.Object);
-        _authService = new Mock<AuthService>(tokenSettings, _context.Object).Object;
+        _context = MockDbContext.Create();
+        _authService = MockAuthService.Create(_context);
     }
 
     [Fact]
@@ -87,10 +64,10 @@ public class AuthServiceShould
     {
         // arrange
         var user = await _context.Object.Set<User>()
-            .SingleOrDefaultAsync(u => u.Id == USER_ID);
+            .SingleOrDefaultAsync(u => u.Id == MockDbContext.AdminUser.Id);
 
         // act 
-        await _authService.LogoutAsync(USER_ID);
+        await _authService.LogoutAsync(MockDbContext.AdminUser.Id);
 
         // assert
         Assert.NotNull(user);
