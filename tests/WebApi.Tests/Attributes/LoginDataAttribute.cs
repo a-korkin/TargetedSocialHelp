@@ -11,8 +11,10 @@ public class LoginDataAttribute : DataAttribute
     {
         LoginDto adminLogin = new("admin", "admin");
         LoginDto badLogin = new("bad", "admin");
+        LoginDto wrongPassword = new("admin", "wrong_password");
 
         yield return new object[] { typeof(OkObjectResult), adminLogin };
         yield return new object[] { typeof(BadRequestResult), badLogin };
+        yield return new object[] { typeof(UnauthorizedResult), wrongPassword};
     }
 }

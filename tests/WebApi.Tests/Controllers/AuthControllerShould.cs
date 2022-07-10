@@ -61,6 +61,5 @@ public class AuthControllerShould
 
         // assert   
         Assert.IsType(expectedAction, result?.Result);
-        Assert.True(true);
     }
 }

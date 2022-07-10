@@ -12,7 +12,7 @@ namespace Application.Tests;
 
 public class AuthServiceShould
 {
-    private const string PASSWORD = "my_secret_password";
+    private const string PASSWORD = "admin";
     private readonly Guid USER_ID = Guid.Parse("97159bc1-2ffd-421e-acb2-a07d869526c6");
     private readonly IAuthService _authService;
     private readonly Mock<IApplicationDbContext> _context;
