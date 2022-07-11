@@ -38,4 +38,17 @@ public class AuthControllerShould
         // assert   
         Assert.IsType(expectedAction, result?.Result);
     }
+
+    [Fact]
+    public async Task LogedOut()
+    {
+        // arrange
+        MockHelper.AdminUser.RefreshToken = Guid.NewGuid().ToString();
+
+        // act 
+        await _authController.LogoutAsync();
+
+        // assert
+        Assert.Null(MockHelper.AdminUser.RefreshToken);
+    }
 }
