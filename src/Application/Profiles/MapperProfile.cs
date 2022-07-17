@@ -8,6 +8,7 @@ public class MapperProfile : Profile
 {
     public MapperProfile()
     {
-        CreateMap<User, UserDto>();
+        CreateMap<UserInDto, User>();
+        CreateMap<User, UserOutDto>();
     }
 }

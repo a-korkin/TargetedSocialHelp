@@ -63,7 +63,7 @@ public class AuthServiceShould
     public async Task LogedOut()
     {
         // arrange
-        var user = await _context.Object.Set<User>()
+        var user = await _context.Object.Users
             .SingleOrDefaultAsync(u => u.Id == MockHelper.AdminUser.Id);
 
         // act 

@@ -1,4 +1,5 @@
 using System.Text;
+using Application;
 using Application.Models.Helpers;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("AppSettings:TokenSettings"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

@@ -36,7 +36,7 @@ public class AuthService : IAuthService
     public async Task<AuthResult> LoginAsync(LoginDto loginDto)
     {
         var result = new AuthResult();
-        var user = await _context.Set<User>()
+        var user = await _context.Users
             .SingleOrDefaultAsync(u => u.UserName == loginDto.UserName);
 
         if (user is null)
@@ -84,7 +84,7 @@ public class AuthService : IAuthService
 
     public async Task LogoutAsync(Guid userId)
     {
-        var user = await _context.Set<User>()
+        var user = await _context.Users
             .SingleOrDefaultAsync(u => u.Id == userId);
 
         if (user is not null)

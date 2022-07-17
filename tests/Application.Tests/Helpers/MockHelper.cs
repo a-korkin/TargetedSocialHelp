@@ -22,7 +22,7 @@ public static class MockHelper
         Mock<IApplicationDbContext> mockContext = new();
         List<User> users = new() { AdminUser };
         var mockUsers = users.AsQueryable().BuildMockDbSet();
-        mockContext.Setup(x => x.Set<User>()).Returns(mockUsers.Object);
+        mockContext.Setup(x => x.Users).Returns(mockUsers.Object);
 
         return mockContext;
     }

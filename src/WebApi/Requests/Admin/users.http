@@ -1,0 +1,9 @@
+POST https://localhost:7150/api/admin/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "userName": "test_user",
+    "lastName": "Johnson",
+    "firstName": "Michael"
+}
