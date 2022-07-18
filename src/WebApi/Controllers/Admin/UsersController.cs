@@ -43,7 +43,6 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<IEnumerable<UserOutDto>>> GetUsersAsync()
     {
         var users = await _mediator.Send(new GetUsersQuery());
-
         return Ok(users);
     }
 

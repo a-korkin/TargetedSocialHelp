@@ -1,6 +1,8 @@
+using Application.Exceptions;
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
 using AutoMapper;
+using Domain.Entities.Admin;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +30,9 @@ public class GetUserQuery : IRequest<UserOutDto>
             var userEntity = await _context.Users
                 .AsNoTracking()
                 .SingleOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
+
+            if (userEntity is null)
+                throw new NotFoundException(name: typeof(User).FullName, key: request.Id);
 
             return _mapper.Map<UserOutDto>(userEntity);
         }
