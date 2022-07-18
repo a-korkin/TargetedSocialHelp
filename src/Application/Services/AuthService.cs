@@ -37,6 +37,7 @@ public class AuthService : IAuthService
     {
         var result = new AuthResult();
         var user = await _context.Users
+            .AsNoTracking()
             .SingleOrDefaultAsync(u => u.UserName == loginDto.UserName);
 
         if (user is null)
@@ -85,6 +86,7 @@ public class AuthService : IAuthService
     public async Task LogoutAsync(Guid userId)
     {
         var user = await _context.Users
+            .AsNoTracking()
             .SingleOrDefaultAsync(u => u.Id == userId);
 
         if (user is not null)
