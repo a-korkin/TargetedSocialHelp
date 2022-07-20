@@ -25,3 +25,7 @@ Authorization: Bearer {{token}}
     "lastName": "lastname updated",
     "firstName": "firstname updated"
 }
+###
+DELETE https://localhost:7150/api/admin/users/2f0ff955-3ee1-4b41-a392-68f3e9d01626
+Content-Type: application/json
+Authorization: Bearer {{token}}
