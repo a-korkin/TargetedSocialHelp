@@ -10,7 +10,7 @@ public class CreateUserCommand : IRequest<UserOutDto>
 {
     public UserInDto? User { get; set; }
 
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserOutDto>
+    internal sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserOutDto>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;

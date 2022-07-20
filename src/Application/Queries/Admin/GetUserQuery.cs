@@ -12,7 +12,7 @@ public class GetUserQuery : IRequest<UserOutDto>
 {
     public Guid Id { get; set; }
 
-    public class GetUserQueryHandler : IRequestHandler<GetUserQuery, UserOutDto>
+    internal sealed class GetUserQueryHandler : IRequestHandler<GetUserQuery, UserOutDto>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;

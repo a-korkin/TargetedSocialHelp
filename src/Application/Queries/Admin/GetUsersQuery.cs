@@ -8,7 +8,7 @@ namespace Application.Queries.Admin;
 
 public class GetUsersQuery : IRequest<IEnumerable<UserOutDto>>
 {
-    public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<UserOutDto>>
+    internal sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<UserOutDto>>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;

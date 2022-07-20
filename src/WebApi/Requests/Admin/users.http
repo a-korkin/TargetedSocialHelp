@@ -1,6 +1,6 @@
 POST https://localhost:7150/api/admin/users
 Content-Type: application/json
-Authorization: {{token}}
+Authorization: Bearer {{token}}
 
 {
     "userName": "test_user",
@@ -10,18 +10,18 @@ Authorization: {{token}}
 ###
 GET https://localhost:7150/api/admin/users
 Content-Type: application/json
-Authorization: {{token}} 
+Authorization: Bearer {{token}} 
 ###
 GET https://localhost:7150/api/admin/users/d3f67070-a5e9-4891-bd64-be10f81888d9
 Content-Type: application/json
-Authorization: {{token}}
+Authorization: Bearer {{token}}
 ###
 PUT https://localhost:7150/api/admin/users/2f0ff955-3ee1-4b41-a392-68f3e9d01626
 Content-Type: application/json
-Authorization: {{token}}
+Authorization: Bearer {{token}}
 
 {
-    "userName": "test_update",
+    "userName": "test_u",
     "lastName": "lastname updated",
     "firstName": "firstname updated"
 }
