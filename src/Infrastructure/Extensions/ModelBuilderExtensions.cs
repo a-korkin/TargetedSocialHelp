@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Extensions;
 
-public static class ModelBuilderExtension
+public static class ModelBuilderExtensions
 {
     public static void Seed(this ModelBuilder builder)
     {

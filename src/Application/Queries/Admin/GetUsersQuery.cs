@@ -32,9 +32,19 @@ public class GetUsersQuery : ResourceParameters, IRequest<PaginatedList<UserOutD
                 filter = u => u.UserName.ToLower() == request.Search.ToLower();
             }
 
+            Func<IQueryable<UserOutDto>, IOrderedQueryable<UserOutDto>>? ordered = null;
+            if (!string.IsNullOrWhiteSpace(request.Ordered))
+            {
+                ordered = u => u.OrderBy(request.Ordered);
+            }
+
             return await _context.Users
                 .ProjectTo<UserOutDto>(_mapper.ConfigurationProvider)
-                .PaginatedListAsync(pageNumber: request.PageNumber, pageSize: request.PageSize, filter: filter);
+                .PaginatedListAsync(
+                    pageNumber: request.PageNumber,
+                    pageSize: request.PageSize,
+                    filter: filter,
+                    orderedQuery: ordered);
         }
     }
 }

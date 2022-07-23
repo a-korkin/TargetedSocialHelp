@@ -48,7 +48,8 @@ public class UsersController : ControllerBase
         {
             PageNumber = resourceParameters.PageNumber,
             PageSize = resourceParameters.PageSize,
-            Search = resourceParameters.Search
+            Search = resourceParameters.Search,
+            Ordered = resourceParameters.Ordered
         };
         var users = await _mediator.Send(query);
 
