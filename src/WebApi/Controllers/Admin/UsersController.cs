@@ -1,5 +1,6 @@
 using Application.Commands.Admin;
 using Application.Models.Dtos.Admin;
+using Application.Models.Helpers;
 using Application.Queries.Admin;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -40,7 +41,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserOutDto>>> GetUsersAsync()
+    public async Task<ActionResult<PaginatedList<UserOutDto>>> GetUsersAsync()
     {
         var users = await _mediator.Send(new GetUsersQuery());
         return Ok(users);

@@ -60,7 +60,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         var details = new ProblemDetails
         {
             Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4",
-            Title = "The specified resourse was not found",
+            Title = "The specified resourse was not found.",
             Detail = exception.Message
         };
 
@@ -76,7 +76,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         var details = new ProblemDetails
         {
             Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8",
-            Title = "Resourse with same unique property already exists",
+            Title = "Resourse with same unique property already exists.",
             Detail = exception.Message
         };
 
