@@ -10,7 +10,7 @@ namespace WebApi.Controllers.Admin;
 
 [ApiController]
 [Route("api/admin/[controller]")]
-[Authorize]
+// [Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -41,9 +41,17 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<PaginatedList<UserOutDto>>> GetUsersAsync()
+    public async Task<ActionResult<PaginatedList<UserOutDto>>> GetUsersAsync(
+        [FromQuery] ResourceParameters resourceParameters)
     {
-        var users = await _mediator.Send(new GetUsersQuery());
+        GetUsersQuery query = new()
+        {
+            PageNumber = resourceParameters.PageNumber,
+            PageSize = resourceParameters.PageSize,
+            Search = resourceParameters.Search
+        };
+        var users = await _mediator.Send(query);
+
         return Ok(users);
     }
 

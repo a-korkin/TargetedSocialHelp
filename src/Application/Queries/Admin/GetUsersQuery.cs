@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Application.Extensions;
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
@@ -25,9 +26,15 @@ public class GetUsersQuery : ResourceParameters, IRequest<PaginatedList<UserOutD
             GetUsersQuery request,
             CancellationToken cancellationToken)
         {
+            Expression<Func<UserOutDto, bool>>? filter = null;
+            if (!string.IsNullOrWhiteSpace(request.Search))
+            {
+                filter = u => u.UserName.ToLower() == request.Search.ToLower();
+            }
+
             return await _context.Users
                 .ProjectTo<UserOutDto>(_mapper.ConfigurationProvider)
-                .PaginatedListAsync(request.PageNumber, request.PageSize);
+                .PaginatedListAsync(pageNumber: request.PageNumber, pageSize: request.PageSize, filter: filter);
         }
     }
 }
