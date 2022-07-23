@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
@@ -27,11 +28,8 @@ public class CreateUserCommand : IRequest<UserOutDto>
             CreateUserCommand request,
             CancellationToken cancellationToken)
         {
-            string userName = request.User!.UserName;
             var userExists = await _context.Users
-                .AnyAsync(u =>
-                    u.UserName.ToLower() == userName.ToLower(),
-                    cancellationToken);
+                .AnyAsync(UserNameExists(request.User!.UserName), cancellationToken);
 
             if (userExists)
             {
@@ -46,5 +44,8 @@ public class CreateUserCommand : IRequest<UserOutDto>
             await _context.SaveChangesAsync(cancellationToken);
             return _mapper.Map<UserOutDto>(userEntity);
         }
+
+        private static Expression<Func<User, bool>> UserNameExists(string userName)
+            => user => user.UserName.ToLower() == userName.ToLower();
     }
 }
