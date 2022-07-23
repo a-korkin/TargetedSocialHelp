@@ -11,7 +11,7 @@ namespace Application.Commands.Admin;
 public class UpdateUserCommand : IRequest<UserOutDto>
 {
     public Guid Id { get; set; }
-    public UserInDto UserIn { get; set; }
+    public UserInDto? UserIn { get; set; }
 
     internal sealed class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserOutDto>
     {

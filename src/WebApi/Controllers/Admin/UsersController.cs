@@ -59,7 +59,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> DeleteUserAsync([FromRoute] Guid id)
     {
         var result = await _mediator.Send(new DeleteUserCommand { UserId = id });
-        
+
         if (!result) return NotFound();
 
         return NoContent();

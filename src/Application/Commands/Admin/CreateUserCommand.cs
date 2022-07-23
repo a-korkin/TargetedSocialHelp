@@ -1,8 +1,10 @@
+using Application.Exceptions;
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
 using AutoMapper;
 using Domain.Entities.Admin;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Commands.Admin;
 
@@ -25,6 +27,20 @@ public class CreateUserCommand : IRequest<UserOutDto>
             CreateUserCommand request,
             CancellationToken cancellationToken)
         {
+            string userName = request.User!.UserName;
+            var userExists = await _context.Users
+                .AnyAsync(u =>
+                    u.UserName.ToLower() == userName.ToLower(),
+                    cancellationToken);
+
+            if (userExists)
+            {
+                throw new AlreadyExistsException(
+                    name: typeof(User).FullName,
+                    property: "UserName",
+                    request.User!.UserName);
+            }
+
             var userEntity = _mapper.Map<User>(request.User);
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync(cancellationToken);
