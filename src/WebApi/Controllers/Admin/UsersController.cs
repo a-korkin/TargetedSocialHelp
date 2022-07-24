@@ -42,17 +42,9 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<PaginatedList<UserOutDto>>> GetUsersAsync(
-        [FromQuery] ResourceParameters resourceParameters)
+        [FromQuery] GetUsersQuery query)
     {
-        GetUsersQuery query = new()
-        {
-            PageNumber = resourceParameters.PageNumber,
-            PageSize = resourceParameters.PageSize,
-            Search = resourceParameters.Search,
-            Ordered = resourceParameters.Ordered
-        };
         var users = await _mediator.Send(query);
-
         return Ok(users);
     }
 
