@@ -6,6 +6,7 @@ using Application.Models.Helpers;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries.Admin;
 
@@ -29,7 +30,7 @@ public class GetUsersQuery : ResourceParameters, IRequest<PaginatedList<UserOutD
             Expression<Func<UserOutDto, bool>>? filter = null;
             if (!string.IsNullOrWhiteSpace(request.Search))
             {
-                filter = u => u.UserName.ToLower() == request.Search.ToLower();
+                filter = u => EF.Functions.Like(u.UserName.ToLower(), request.Search.ToLower());
             }
 
             Func<IQueryable<UserOutDto>, IOrderedQueryable<UserOutDto>>? ordered = null;

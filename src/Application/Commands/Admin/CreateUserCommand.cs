@@ -46,6 +46,6 @@ public class CreateUserCommand : IRequest<UserOutDto>
         }
 
         private static Expression<Func<User, bool>> UserNameExists(string userName)
-            => user => user.UserName.ToLower() == userName.ToLower();
+            => user => EF.Functions.Like(user.UserName.ToLower(), userName.ToLower());
     }
 }

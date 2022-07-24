@@ -12,7 +12,7 @@ GET https://localhost:7150/api/admin/users
 Content-Type: application/json
 Authorization: Bearer {{token}} 
 ###
-GET https://localhost:7150/api/admin/users?ordered=LastName
+GET https://localhost:7150/api/admin/users?search=admin
 Content-Type: application/json
 Authorization: Bearer {{token}}
 ###
