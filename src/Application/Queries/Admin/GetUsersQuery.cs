@@ -34,19 +34,13 @@ public class GetUsersQuery : ResourceParameters, IRequest<PaginatedList<UserOutD
                 filter = u => EF.Functions.Like(u.UserName.ToLower(), request.Filter.ToLower());
             }
 
-            Func<IQueryable<UserOutDto>, IOrderedQueryable<UserOutDto>>? ordered = null;
-            if (!string.IsNullOrWhiteSpace(request.Sort))
-            {
-                ordered = u => u.Sorted(request.Sort);
-            }
-
             return await _context.Users
                 .ProjectTo<UserOutDto>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(
                     pageNumber: request.PageNumber,
                     pageSize: request.PageSize,
                     filter: filter,
-                    orderedQuery: ordered);
+                    ordered: request.Sort);
         }
     }
 }

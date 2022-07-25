@@ -11,8 +11,14 @@ public static class IQueryableExtensions
         int pageNumber,
         int pageSize,
         Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderedQuery = null)
+        string? ordered = null)
     {
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderedQuery = null;
+        if (!string.IsNullOrWhiteSpace(ordered))
+        {
+            orderedQuery = u => u.Sorted(ordered);
+        }
+
         return PaginatedList<T>.GetAsync(source, pageNumber, pageSize, filter, orderedQuery);
     }
 
@@ -57,23 +63,23 @@ public static class IQueryableExtensions
         this IQueryable<T> source,
         string sort)
     {
-        Regex orderReg = new(@"^(\w{3,4})\(");
+        Regex orderReg = new(@"^(\w+)\(");
         Regex fieldReg = new(@"\((\w+)\)");
-
         string[] sortings = sort.Split(',');
         IOrderedQueryable<T> result = source.OrderBy(_ => 0);
+
         foreach (string sorting in sortings)
         {
             var field = fieldReg.Match(sorting).Groups[1].Value;
-            var order = orderReg.Match(sorting).Groups[1].Value;
+            var order = orderReg.Match(sorting).Groups[1].Value.ToLower();
 
-            result = Sort<T>(result, order, field);
+            result = SortByField<T>(result, order, field);
         }
 
         return result;
     }
 
-    private static IOrderedQueryable<T> Sort<T>(
+    private static IOrderedQueryable<T> SortByField<T>(
         IOrderedQueryable<T> source,
         string order,
         string field) => order switch
