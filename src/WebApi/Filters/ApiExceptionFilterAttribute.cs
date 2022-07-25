@@ -42,7 +42,8 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         {
             Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
             Status = StatusCodes.Status500InternalServerError,
-            Title = "An error occurred while processing your request."
+            Title = "An error occurred while processing your request.",
+            Detail = context.Exception.Message
         };
 
         context.Result = new ObjectResult(details)

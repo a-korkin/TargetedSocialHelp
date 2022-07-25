@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using Application.Extensions;
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
@@ -28,15 +29,15 @@ public class GetUsersQuery : ResourceParameters, IRequest<PaginatedList<UserOutD
             CancellationToken cancellationToken)
         {
             Expression<Func<UserOutDto, bool>>? filter = null;
-            if (!string.IsNullOrWhiteSpace(request.Search))
+            if (!string.IsNullOrWhiteSpace(request.Filter))
             {
-                filter = u => EF.Functions.Like(u.UserName.ToLower(), request.Search.ToLower());
+                filter = u => EF.Functions.Like(u.UserName.ToLower(), request.Filter.ToLower());
             }
 
             Func<IQueryable<UserOutDto>, IOrderedQueryable<UserOutDto>>? ordered = null;
-            if (!string.IsNullOrWhiteSpace(request.Ordered))
+            if (!string.IsNullOrWhiteSpace(request.Sort))
             {
-                ordered = u => u.OrderBy(request.Ordered);
+                ordered = u => u.Sorted(request.Sort);
             }
 
             return await _context.Users
