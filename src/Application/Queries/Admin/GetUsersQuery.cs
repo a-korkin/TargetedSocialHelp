@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Application.Extensions;
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
@@ -34,6 +33,7 @@ public class GetUsersQuery : ResourceParameters, IRequest<PaginatedList<UserOutD
             // }
 
             return await _context.Users
+                .AsNoTracking()
                 .ProjectTo<UserOutDto>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(request, cancellationToken);
         }

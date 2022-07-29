@@ -24,19 +24,11 @@ public class PaginatedList<TEntity>
         IQueryable<TEntity> source,
         int pageNumber,
         int pageSize,
-        Expression<Func<TEntity, bool>>? filter = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderedQuery = null,
         CancellationToken cancellationToken = default)
     {
-        IQueryable<TEntity> query = source;
+        int count = await source.CountAsync(cancellationToken);
 
-        if (filter is not null) query = query.Where(filter);
-
-        if (orderedQuery is not null) query = orderedQuery(query);
-
-        int count = await query.CountAsync(cancellationToken);
-
-        List<TEntity> items = await query
+        List<TEntity> items = await source
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

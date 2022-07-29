@@ -11,55 +11,61 @@ public static class IQueryableExtensions
         ResourceParameters request,
         CancellationToken cancellationToken = default)
     {
-        Expression<Func<T, bool>>? filter = null;
-        // if (!string.IsNullOrWhiteSpace(request.Search))
-        // {
-        //     if (request.Search.Contains(':'))
-        //     {
-        //         foreach (var searchTerm in request.Search.Split(','))
-        //         {
-        //             Regex searchReg = new(@"(\w+):(\w+)");
-        //             string field = searchReg.Match(searchTerm).Groups[1].Value;
-        //             string term = searchReg.Match(request.Search).Groups[2].Value;
-        //             Console.WriteLine($"field: {field}, term: {term}");
-        //         }
-        //     }
-        // }
+        if (!string.IsNullOrWhiteSpace(request.Search)) source = source.Filter(request.Search);
 
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderedQuery = null;
-        if (!string.IsNullOrWhiteSpace(request.Sort)) orderedQuery = u => u.Order(request.Sort);
+        if (!string.IsNullOrWhiteSpace(request.Sort)) source = source.Order(request.Sort);
 
         return PaginatedList<T>.GetAsync(
             source,
             request.PageNumber,
             request.PageSize,
-            filter,
-            orderedQuery,
             cancellationToken);
     }
 
-    private static IOrderedQueryable<T> Order<T>(
-        this IQueryable<T> source,
-        string sort)
+    private static IQueryable<T> Filter<T>(this IQueryable<T> source, string search)
     {
-        Regex orderReg = new(@"^(\w+)\(");
-        Regex fieldReg = new(@"\((\w+)\)");
+        Regex searchRegex = new(@"(\w+):(\w+)");
+        string[] searchItems = search.Split(',');
+        var parameter = Expression.Parameter(typeof(T));
+
+        foreach (var item in searchItems)
+        {
+            string field = searchRegex.Match(item).Groups[1].Value;
+            string term = searchRegex.Match(item).Groups[2].Value.ToLower();
+
+            var property = Expression.Property(parameter, field);
+            var propertyExp = Expression.Call(property, "ToLower", Type.EmptyTypes);
+            var value = Expression.Constant(term, typeof(string));
+            var valueExp = Expression.Call(value, "ToLower", Type.EmptyTypes);
+            var containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+            var containsMethodExp = Expression.Call(propertyExp, containsMethod!, valueExp);
+
+            var lambda = Expression.Lambda<Func<T, bool>>(containsMethodExp, parameter);
+            source = source.Where(lambda);
+        }
+
+        return source;
+    }
+
+    private static IOrderedQueryable<T> Order<T>(this IQueryable<T> source, string sort)
+    {
+        Regex sortingRegex = new(@"^(\w+)\((\w+)\)");
         string[] sortings = sort.Split(',');
 
         IOrderedQueryable<T>? result = null;
 
         foreach (var sorting in sortings.Select((value, index) => new { index, value }))
         {
-            var field = fieldReg.Match(sorting.value).Groups[1].Value;
-            var order = orderReg.Match(sorting.value).Groups[1].Value.ToLower();
+            var order = sortingRegex.Match(sorting.value).Groups[1].Value.ToLower();
+            var field = sortingRegex.Match(sorting.value).Groups[2].Value;
 
             if (sorting.index == 0)
             {
-                result = OrderByField<T>(source, order, field);
+                result = OrderByField(source, order, field);
 
                 if (sortings.Length == 1) return result;
             }
-            result = OrderByField<T>(result!, order + "_and_then", field);
+            result = OrderByField(result!, order + "_and_then", field);
         }
 
         return result!;
