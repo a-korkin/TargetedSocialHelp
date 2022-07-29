@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 using Application.Extensions;
 using Application.Interfaces;
 using Application.Models.Dtos.Admin;
@@ -28,19 +27,15 @@ public class GetUsersQuery : ResourceParameters, IRequest<PaginatedList<UserOutD
             GetUsersQuery request,
             CancellationToken cancellationToken)
         {
-            Expression<Func<UserOutDto, bool>>? filter = null;
-            if (!string.IsNullOrWhiteSpace(request.Filter))
-            {
-                filter = u => EF.Functions.Like(u.UserName.ToLower(), request.Filter.ToLower());
-            }
+            // Expression<Func<UserOutDto, bool>>? filter = null;
+            // if (!string.IsNullOrWhiteSpace(request.Filter))
+            // {
+            //     filter = u => EF.Functions.Like(u.UserName.ToLower(), request.Filter.ToLower());
+            // }
 
             return await _context.Users
                 .ProjectTo<UserOutDto>(_mapper.ConfigurationProvider)
-                .PaginatedListAsync(
-                    pageNumber: request.PageNumber,
-                    pageSize: request.PageSize,
-                    filter: filter,
-                    ordered: request.Sort);
+                .PaginatedListAsync(request, cancellationToken);
         }
     }
 }
