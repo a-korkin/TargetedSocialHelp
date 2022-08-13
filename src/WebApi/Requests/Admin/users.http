@@ -28,7 +28,7 @@ GET https://localhost:7150/api/admin/users?sort=asc(username),desc(firstname)
 Content-Type: application/json
 Authorization: Bearer {{token}}
 ###
-GET https://localhost:7150/api/admin/users/d3f67070-a5e9-4891-bd64-be10f81888d9
+GET https://localhost:7150/api/admin/users/3a89e502-cb19-4775-81bb-bc8bf15c55bc
 Content-Type: application/json
 Authorization: Bearer {{token}}
 ###

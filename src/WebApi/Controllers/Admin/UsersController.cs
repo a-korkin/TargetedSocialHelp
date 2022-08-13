@@ -10,7 +10,7 @@ namespace WebApi.Controllers.Admin;
 
 [ApiController]
 [Route("api/admin/[controller]")]
-// [Authorize]
+[Authorize("ClaimsRequired")]
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;

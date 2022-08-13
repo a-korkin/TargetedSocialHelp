@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Models.Helpers;
@@ -24,7 +23,7 @@ public class PaginatedList<TEntity>
         IQueryable<TEntity> source,
         int pageNumber,
         int pageSize,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         int count = await source.CountAsync(cancellationToken);
 

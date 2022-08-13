@@ -3,7 +3,9 @@ using Application;
 using Application.Models.Helpers;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using WebApi.Authorization;
 using WebApi.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +39,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(tokenSettings.SecretKey))
         };
     });
+builder.Services.AddTransient<IAuthorizationHandler, ClaimsHandler>();
+builder.Services.AddAuthorization(options =>
+    options.AddPolicy("ClaimsRequired", policy => policy.Requirements.Add(new ClaimsRequirement())));
 
 var app = builder.Build();
 
@@ -50,6 +55,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.UseAuthorization();
 

@@ -26,12 +26,6 @@ public class GetUsersQuery : ResourceParameters, IRequest<PaginatedList<UserOutD
             GetUsersQuery request,
             CancellationToken cancellationToken)
         {
-            // Expression<Func<UserOutDto, bool>>? filter = null;
-            // if (!string.IsNullOrWhiteSpace(request.Filter))
-            // {
-            //     filter = u => EF.Functions.Like(u.UserName.ToLower(), request.Filter.ToLower());
-            // }
-
             return await _context.Users
                 .AsNoTracking()
                 .ProjectTo<UserOutDto>(_mapper.ConfigurationProvider)

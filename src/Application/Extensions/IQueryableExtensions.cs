@@ -9,9 +9,9 @@ public static class IQueryableExtensions
     public static Task<PaginatedList<T>> PaginatedListAsync<T>(
         this IQueryable<T> source,
         ResourceParameters request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
-        if (!string.IsNullOrWhiteSpace(request.Search)) source = source.Filter(request.Search);
+        if (!string.IsNullOrWhiteSpace(request.Search)) source = source.Search(request.Search);
 
         if (!string.IsNullOrWhiteSpace(request.Sort)) source = source.Order(request.Sort);
 
@@ -22,7 +22,7 @@ public static class IQueryableExtensions
             cancellationToken);
     }
 
-    private static IQueryable<T> Filter<T>(this IQueryable<T> source, string search)
+    private static IQueryable<T> Search<T>(this IQueryable<T> source, string search)
     {
         Regex searchRegex = new(@"(\w+):(\w+)");
         string[] searchItems = search.Split(',');
